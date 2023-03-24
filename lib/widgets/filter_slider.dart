@@ -67,7 +67,7 @@ class _PokemonType extends StatelessWidget {
         ),
         Text(
           filterText,
-          style: AppTheme.menu,
+          style: AppTheme.menu.copyWith(color: AppTheme.contrast),
           overflow: TextOverflow.ellipsis,
         )
       ]),

@@ -16,8 +16,8 @@ class PokemonListProvider extends ChangeNotifier {
 
   getOnDisplayPokemon() async {
     int i = 1;
-    while (i < 30) {
-      var url = Uri.https(baseurl, "api/v2/pokemon/$i");
+    while (i < 11) {
+      var url = Uri.https(baseurl, "api/v2/pokemon/${11 - i}");
 
       final response = await http.get(url);
       final pokemon = pokemonFromJson(response.body);
@@ -78,6 +78,5 @@ class PokemonColorProvider extends ChangeNotifier {
     }
 
     notifyListeners();
-
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/models/models.dart';
 import 'package:pokedex/themes/app_theme.dart';
 import 'package:pokedex/widgets/widgets.dart';
 
@@ -7,23 +8,34 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Change to a movie instance
-
-    final String  poke =
-        ModalRoute.of(context)?.settings.arguments.toString() ?? "missigno";
+    final Pokemon poke = ModalRoute.of(context)?.settings.arguments as Pokemon;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomAppBar(),
-          SliverList(delegate: SliverChildListDelegate([_SpriteDescription(),const SizedBox(height: 10,),_Abilities(),_Abilities(),_Abilities(),_Abilities(),const Evolutions()]))
+          CustomAppBar(poke:poke),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            _SpriteDescription(),
+            const SizedBox(
+              height: 10,
+            ),
+            _Abilities(),
+            _Abilities(),
+            _Abilities(),
+            _Abilities(),
+            const Evolutions()
+          ]))
         ],
       ),
     );
   }
 }
 
-class _CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatelessWidget {
+  final Pokemon poke;
+   CustomAppBar({super.key, required this.poke});
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -37,14 +49,14 @@ class _CustomAppBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
             child: Container(
                 color: AppTheme.electric.withOpacity(.5),
-                child: const Text(
-                  "Pikachu #0125",
+                child: Text(
+                  "${poke.name} #0125",
                   style: TextStyle(fontSize: 26, color: AppTheme.contrast),
                 ))),
-        background: const FadeInImage(
+        background: FadeInImage(
           placeholder: AssetImage("assets/pokemonholder.png"),
           image: NetworkImage(
-              "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"),
+             "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"),
         ),
       ),
     );
@@ -73,7 +85,7 @@ class _SpriteDescription extends StatelessWidget {
               ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Container(
-                    color: const Color.fromRGBO(247, 208, 44, 1.000),
+                    color: AppTheme.electric,
                     child: const Text("Electric"),
                   ))
             ],
@@ -107,28 +119,30 @@ class _Abilities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20,10,20,20),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
       child: Column(
         children: [
-          const Text("Abilities",style:AppTheme.title),
+          const Text("Abilities", style: AppTheme.title),
           const SizedBox(height: 20),
           Row(children: const [
-            Text("Static",style: AppTheme.title,),
+            Text(
+              "Static",
+              style: AppTheme.title,
+            ),
           ]),
           const SizedBox(height: 10),
-          
-            const Text("Whenever a move makes contact with this Pokémon, the move's user has a 30% chance of being paralyzed.\n\nPokémon that are immune to electric-type moves can still be paralyzed by this ability.\n\nOverworld: If the lead Pokémon has this ability, there is a 50% chance that encounters will be with an electric Pokémon, if applicable."),
+          const Text(
+              "Whenever a move makes contact with this Pokémon, the move's user has a 30% chance of being paralyzed.\n\nPokémon that are immune to electric-type moves can still be paralyzed by this ability.\n\nOverworld: If the lead Pokémon has this ability, there is a 50% chance that encounters will be with an electric Pokémon, if applicable."),
           const SizedBox(height: 20),
           Row(
             children: const [
-              Text("Lightning-rod",style: AppTheme.title),
+              Text("Lightning-rod", style: AppTheme.title),
               Icon(Icons.lock)
             ],
-            
           ),
           const SizedBox(height: 10),
-          const Text("Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability.")
-          
+          const Text(
+              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability.")
         ],
       ),
     );

@@ -4,9 +4,30 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/models/models.dart';
 
-class CardSwiper extends StatelessWidget {
+class CardSwiper extends StatefulWidget {
   const CardSwiper({super.key, required this.pokemons});
   final List<Pokemon> pokemons;
+
+  @override
+  State<CardSwiper> createState() => _CardSwiperState();
+}
+
+class _CardSwiperState extends State<CardSwiper> {
+  final SwiperController swipeController = SwiperController();
+
+  @override
+  void initState() {
+    super.initState();
+    swipeController.addListener(() {
+      print(swipeController.next());
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +37,17 @@ class CardSwiper extends StatelessWidget {
       width: double.infinity,
       height: size.height * 0.5,
       child: Swiper(
+        controller: swipeController,
         scrollDirection: Axis.vertical,
-        itemCount: pokemons.length,
+        itemCount: widget.pokemons.length,
         layout: SwiperLayout.STACK,
         itemWidth: size.width * 0.6,
         itemHeight: size.height * 0.3,
         itemBuilder: (_, int index) {
-          print(index);
-          final pokemon = pokemons[index];
+          final pokemon = widget.pokemons[index];
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: 'pokemon-instance'),
+                arguments: pokemon),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(

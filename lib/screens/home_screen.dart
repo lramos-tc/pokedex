@@ -41,9 +41,10 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+
         child: Column(children: [
           CardSwiper(
-            pokemons: pokemonProvider.onDisplayPokemon,
+              pokemons: pokemonProvider.onDisplayPokemon,
           ),
           FilterSlider(
             title: "Pokemon Type",
