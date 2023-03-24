@@ -2,26 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:pokedex/themes/themes.dart';
 
 class FilterSlider extends StatelessWidget {
-  const FilterSlider({super.key, required this.title});
+  const FilterSlider({super.key, required this.title, required this.filters});
 
   final String title;
-  //final List<dynamic> filters;
+  final List<dynamic> filters;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 260,
+      height: 200,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-         Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(title, style: AppTheme.title),
         ),
         Expanded(
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemBuilder: (_, int index) =>  _PokemonType(),
-            itemCount: 20,
+            itemBuilder: (_, int index) {
+              var typer = filters[index];
+              print("$typer,Helloo");
+              return _PokemonType(filterText: typer.name);
+            },
+            itemCount: filters.length,
           ),
         ),
       ]),
@@ -30,6 +34,9 @@ class FilterSlider extends StatelessWidget {
 }
 
 class _PokemonType extends StatelessWidget {
+  final String filterText;
+
+  const _PokemonType({required this.filterText});
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +52,21 @@ class _PokemonType extends StatelessWidget {
                 arguments: "type-instance"),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: const FadeInImage(
-                  placeholder: AssetImage("assets/pokemonholder.png"),
-                  image: NetworkImage(
-                      "https://th.bing.com/th/id/OIP.mGik7m2SiXedkVyz4_C51gHaHa?pid=ImgDet&w=920&h=920&rs=1"),
-                  width: 130,
-                  height: 190,
+              child: FadeInImage(
+                  imageErrorBuilder:
+                      (_, Object exception, StackTrace? stackTrace) {
+                    return Container();
+                  },
+                  placeholder: const AssetImage("assets/pokemonholder.png"),
+                  image: AssetImage("assets/$filterText.png"),
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover),
             ),
           ),
         ),
-        const Text(
-          "Water",
+        Text(
+          filterText,
           style: AppTheme.menu,
           overflow: TextOverflow.ellipsis,
         )

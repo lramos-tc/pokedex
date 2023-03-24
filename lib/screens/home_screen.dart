@@ -14,8 +14,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final pokemonProvider = Provider.of<PokemonListProvider>(context);
     final menuOptions = AppRoutes.menuOptions;
+    final pokemonTypeProvider = Provider.of<PokemonTypeProvider>(context);
+    final pokemonColorProvider = Provider.of<PokemonColorProvider>(context);
 
-    print("${pokemonProvider.onDisplayPokemon}, hello");
+    
     return Scaffold(
       drawer: Drawer(
         backgroundColor: AppTheme.deep,
@@ -43,8 +45,14 @@ class HomeScreen extends StatelessWidget {
           CardSwiper(
             pokemons: pokemonProvider.onDisplayPokemon,
           ),
-          const FilterSlider(title:"Pokemon Type"),
-          const FilterSlider(title:"Pokemon Color")
+          FilterSlider(
+            title: "Pokemon Type",
+            filters: pokemonTypeProvider.existingType,
+          ),
+          FilterSlider(
+            title: "Pokemon Color",
+            filters: pokemonColorProvider.pokeByColor,
+          )
         ]),
       ),
     );

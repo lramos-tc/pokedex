@@ -42,7 +42,7 @@ class _CustomAppBar extends StatelessWidget {
                   style: TextStyle(fontSize: 26, color: AppTheme.contrast),
                 ))),
         background: const FadeInImage(
-          placeholder: AssetImage("assests/pokemonholder.png"),
+          placeholder: AssetImage("assets/pokemonholder.png"),
           image: NetworkImage(
               "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"),
         ),

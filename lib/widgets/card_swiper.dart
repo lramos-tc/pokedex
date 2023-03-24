@@ -23,7 +23,7 @@ class CardSwiper extends StatelessWidget {
         itemHeight: size.height * 0.3,
         itemBuilder: (_, int index) {
           print(index);
-          final pokemon = pokemons[(pokemons.length - 1) - index];
+          final pokemon = pokemons[index];
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, 'details',
                 arguments: 'pokemon-instance'),
