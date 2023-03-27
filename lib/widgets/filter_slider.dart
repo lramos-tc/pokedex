@@ -22,7 +22,6 @@ class FilterSlider extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, int index) {
               var typer = filters[index];
-              print("$typer,Helloo");
               return _PokemonType(filterText: typer.name);
             },
             itemCount: filters.length,

@@ -22,7 +22,13 @@ class PokemonListProvider extends ChangeNotifier {
       final response = await http.get(url);
       final pokemon = pokemonFromJson(response.body);
 
+      var url2 = Uri.https(baseurl, "api/v2/pokemon-species/${11 - i}");
+
+      final response2 = await http.get(url2);
+      final pokemonData = speciesFromJson(response2.body);
+
       onDisplayPokemon.add(pokemon);
+      onDisplayPokemon[i-1].speciesData = pokemonData;
       i++;
     }
     notifyListeners();
@@ -80,3 +86,5 @@ class PokemonColorProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+

@@ -1,29 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/models/models.dart';
+import 'package:pokedex/models/models.dart' as poket;
+import 'package:pokedex/models/pokemon_response.dart';
 import 'package:pokedex/themes/app_theme.dart';
 import 'package:pokedex/widgets/widgets.dart';
 
-class DetailsScreen extends StatelessWidget {
+late Color type;
+
+class DetailsScreen extends StatefulWidget {
   const DetailsScreen({Key? key}) : super(key: key);
 
   @override
+  State<DetailsScreen> createState() => _DetailsScreenState();
+}
+
+class _DetailsScreenState extends State<DetailsScreen> {
+  @override
   Widget build(BuildContext context) {
-    final Pokemon poke = ModalRoute.of(context)?.settings.arguments as Pokemon;
+    final poket.Pokemon poke =
+        ModalRoute.of(context)?.settings.arguments as poket.Pokemon;
+
+    String ability = poke.abilities[0].ability.name;
+    String? ability2;
+    bool? ability2H;
+    String? ability3;
+    bool? ability3H;
+    void cambiar() {
+      switch (poke.abilities.length) {
+        case (2):
+          ability2 = poke.abilities[1].ability.name;
+          ability2H = poke.abilities[1].isHidden;
+          break;
+        case (3):
+          ability2 = poke.abilities[1].ability.name;
+          ability2H = poke.abilities[1].isHidden;
+          ability3 = poke.abilities[2].ability.name;
+          ability3H = poke.abilities[2].isHidden;
+          break;
+      }
+
+      setState(() {
+        cambiar();
+      });
+    }
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          CustomAppBar(poke:poke),
+          CustomAppBar(poke: poke),
           SliverList(
               delegate: SliverChildListDelegate([
-            _SpriteDescription(),
+            _SpriteDescription(
+                sprite: poke.sprites.frontDefault,
+                firstType: poke.types[0].type.name,
+                genus: poke.speciesData.genera[7].genus,
+                description: poke.speciesData.flavorTextEntries
+                    .firstWhere((x) => x.language.name == "en")
+                    .flavorText),
             const SizedBox(
               height: 10,
             ),
-            _Abilities(),
-            _Abilities(),
-            _Abilities(),
-            _Abilities(),
+            _Abilities(
+              ability: poke.abilities[0].ability.name,
+              ability2: ability2,
+              ability2H: ability2H,
+              ability3: ability3,
+              ability3H: ability3H,
+            ),
             const Evolutions()
           ]))
         ],
@@ -33,13 +75,72 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  final Pokemon poke;
-   CustomAppBar({super.key, required this.poke});
+  final poket.Pokemon poke;
+  CustomAppBar({super.key, required this.poke});
+  void paintType() {
+    switch (poke.types[0].type.name) {
+      case "normal":
+        type = AppTheme.normal;
+        break;
+      case "fighting":
+        type = AppTheme.fighting;
+        break;
+      case "flying":
+        type = AppTheme.flying;
+        break;
+      case "poison":
+        type = AppTheme.poison;
+        break;
+      case "ground":
+        type = AppTheme.ground;
+        break;
+      case "rock":
+        type = AppTheme.rock;
+        break;
+      case "bug":
+        type = AppTheme.bug;
+        break;
+      case "ghost":
+        type = AppTheme.ghost;
+        break;
+      case "steel":
+        type = AppTheme.steel;
+        break;
+      case "fire":
+        type = AppTheme.fire;
+        break;
+      case "water":
+        type = AppTheme.water;
+        break;
+      case "grass":
+        type = AppTheme.grass;
+        break;
+      case "electric":
+        type = AppTheme.electric;
+        break;
+      case "psychic":
+        type = AppTheme.psychic;
+        break;
+      case "ice":
+        type = AppTheme.ice;
+        break;
+      case "dragon":
+        type = AppTheme.dragon;
+        break;
+      case "dark":
+        type = AppTheme.dark;
+        break;
+      case "fairy":
+        type = AppTheme.fairy;
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    paintType();
     return SliverAppBar(
-      backgroundColor: AppTheme.electric,
+      backgroundColor: type,
       expandedHeight: 200,
       floating: false,
       pinned: true,
@@ -48,15 +149,16 @@ class CustomAppBar extends StatelessWidget {
         title: ClipRRect(
             borderRadius: BorderRadius.circular(40),
             child: Container(
-                color: AppTheme.electric.withOpacity(.5),
+                color: type.withOpacity(.5),
                 child: Text(
-                  "${poke.name} #0125",
-                  style: TextStyle(fontSize: 26, color: AppTheme.contrast),
+                  "${poke.name[0].toUpperCase()}${poke.name.substring(1)} #${poke.id}",
+                  style:
+                      const TextStyle(fontSize: 26, color: AppTheme.contrast),
                 ))),
         background: FadeInImage(
-          placeholder: AssetImage("assets/pokemonholder.png"),
+          placeholder: const AssetImage("assets/pokemonholder.png"),
           image: NetworkImage(
-             "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"),
+              poke.sprites.other!.officialArtwork.frontDefault.toString()),
         ),
       ),
     );
@@ -64,58 +166,85 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class _SpriteDescription extends StatelessWidget {
+  final String sprite;
+  final String firstType;
+  final String genus;
+  final String description;
+
+  const _SpriteDescription(
+      {super.key,
+      required this.sprite,
+      required this.firstType,
+      required this.genus,
+      required this.description});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: const FadeInImage(
-                  height: 150,
-                  image: NetworkImage(
-                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"),
-                  placeholder: AssetImage("assets/pokemonholder.png"),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: FadeInImage(
+                    height: 150,
+                    image: NetworkImage(sprite),
+                    placeholder: const AssetImage("assets/pokemonholder.png"),
+                  ),
                 ),
-              ),
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: Container(
-                    color: AppTheme.electric,
-                    child: const Text("Electric"),
-                  ))
-            ],
-          ),
-          const SizedBox(
-            width: 50,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: const [
-              Text(
-                "Mouse Pokémon",
-                style: AppTheme.title,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                "When several of\nthese POKéMON\ngather, their\u000celectricity could\nbuild and cause\nlightning storms.",
-                style: TextStyle(fontSize: 15),
-              ),
-            ],
-          )
-        ],
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Container(
+                      color: type,
+                      child: Text(firstType),
+                    ))
+              ],
+            ),
+            const SizedBox(
+              width: 30,
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  genus,
+                  style: AppTheme.title,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
 class _Abilities extends StatelessWidget {
+  final String ability;
+  final String? ability2;
+  final String? ability3;
+  final bool? ability2H;
+  final bool? ability3H;
+
+  const _Abilities(
+      {super.key,
+      required this.ability,
+      this.ability2,
+      this.ability3,
+      this.ability2H,
+      this.ability3H});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -124,25 +253,32 @@ class _Abilities extends StatelessWidget {
         children: [
           const Text("Abilities", style: AppTheme.title),
           const SizedBox(height: 20),
-          Row(children: const [
+          Row(children: [
             Text(
-              "Static",
+              "${ability[0].toUpperCase()}${ability.substring(1)}",
               style: AppTheme.title,
             ),
           ]),
           const SizedBox(height: 10),
           const Text(
-              "Whenever a move makes contact with this Pokémon, the move's user has a 30% chance of being paralyzed.\n\nPokémon that are immune to electric-type moves can still be paralyzed by this ability.\n\nOverworld: If the lead Pokémon has this ability, there is a 50% chance that encounters will be with an electric Pokémon, if applicable."),
+              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability."),
           const SizedBox(height: 20),
-          Row(
-            children: const [
-              Text("Lightning-rod", style: AppTheme.title),
-              Icon(Icons.lock)
-            ],
-          ),
+          if (ability2 != null)
+            Row(
+              children: [
+                if (ability2 != null) Text(ability2!, style: AppTheme.title), const Text(
+              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability."),
           const SizedBox(height: 10),
-          const Text(
-              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability.")
+                if (ability2H == true) Icon(Icons.lock)
+              ],
+            ),
+          if (ability3 != null)
+            Row(
+              children: [
+                if (ability2 != null) Text(ability3!, style: AppTheme.title),
+                if (ability3H == true) Icon(Icons.lock)
+              ],
+            )
         ],
       ),
     );

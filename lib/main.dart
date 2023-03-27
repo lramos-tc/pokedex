@@ -27,7 +27,9 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => PokemonColorProvider(),
           lazy: false,
-        )
+          
+        ),
+        
       ],
       child: const MyApp(),
     );

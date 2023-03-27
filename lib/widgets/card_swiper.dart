@@ -8,6 +8,10 @@ class CardSwiper extends StatefulWidget {
   const CardSwiper({super.key, required this.pokemons});
   final List<Pokemon> pokemons;
 
+  
+  
+  
+
   @override
   State<CardSwiper> createState() => _CardSwiperState();
 }
@@ -15,11 +19,23 @@ class CardSwiper extends StatefulWidget {
 class _CardSwiperState extends State<CardSwiper> {
   final SwiperController swipeController = SwiperController();
 
+void detectSwipe() {
+    GestureDetector(onVerticalDragUpdate: (details) {
+      int sensitivity = 8;
+      if (details.delta.dy > sensitivity) {
+        print("abajo");
+      } else if (details.delta.dy < -sensitivity) {
+        print("arriba");
+      }
+    });}
+
+
   @override
   void initState() {
     super.initState();
+    
     swipeController.addListener(() {
-      print(swipeController.next());
+      detectSwipe();
     });
   }
 
@@ -46,8 +62,8 @@ class _CardSwiperState extends State<CardSwiper> {
         itemBuilder: (_, int index) {
           final pokemon = widget.pokemons[index];
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: pokemon),
+            onTap: () =>
+                Navigator.pushNamed(context, 'details', arguments: pokemon),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(
