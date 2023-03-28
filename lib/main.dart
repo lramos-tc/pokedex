@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "home",
       routes: {
         "home": (_) => const HomeScreen(),
-        "details": (_) => DetailsScreen(),
+        "details": (_) => const DetailsScreen(),
       },
       theme: AppTheme.lightTheme,
     );

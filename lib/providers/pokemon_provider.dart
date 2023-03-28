@@ -11,24 +11,24 @@ class PokemonListProvider extends ChangeNotifier {
   PokemonListProvider() {
     print("Pokemon provider initialized");
 
-    getOnDisplayPokemon();
+    getOnDisplayPokemon(1);
   }
 
-  getOnDisplayPokemon() async {
-    int i = 1;
-    while (i < 11) {
-      var url = Uri.https(baseurl, "api/v2/pokemon/${11 - i}");
+  getOnDisplayPokemon(int i) async {
+    i = i;
+    while (i < i + 20) {
+      var url = Uri.https(baseurl, "api/v2/pokemon/$i");
 
       final response = await http.get(url);
       final pokemon = pokemonFromJson(response.body);
 
-      var url2 = Uri.https(baseurl, "api/v2/pokemon-species/${11 - i}");
+      var url2 = Uri.https(baseurl, "api/v2/pokemon-species/$i");
 
       final response2 = await http.get(url2);
       final pokemonData = speciesFromJson(response2.body);
 
       onDisplayPokemon.add(pokemon);
-      onDisplayPokemon[i-1].speciesData = pokemonData;
+      onDisplayPokemon[i - 1].speciesData = pokemonData;
       i++;
     }
     notifyListeners();
@@ -86,5 +86,3 @@ class PokemonColorProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/models/models.dart' as poket;
-import 'package:pokedex/models/pokemon_response.dart';
 import 'package:pokedex/themes/app_theme.dart';
 import 'package:pokedex/widgets/widgets.dart';
 
@@ -24,24 +23,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
     bool? ability2H;
     String? ability3;
     bool? ability3H;
-    void cambiar() {
-      switch (poke.abilities.length) {
-        case (2):
-          ability2 = poke.abilities[1].ability.name;
-          ability2H = poke.abilities[1].isHidden;
-          break;
-        case (3):
-          ability2 = poke.abilities[1].ability.name;
-          ability2H = poke.abilities[1].isHidden;
-          ability3 = poke.abilities[2].ability.name;
-          ability3H = poke.abilities[2].isHidden;
-          break;
-      }
-
-      setState(() {
-        cambiar();
-      });
+    switch (poke.abilities.length) {
+      case (2):
+        ability2 = poke.abilities[1].ability.name;
+        ability2H = poke.abilities[1].isHidden;
+        break;
+      case (3):
+        ability2 = poke.abilities[1].ability.name;
+        ability2H = poke.abilities[1].isHidden;
+        ability3 = poke.abilities[2].ability.name;
+        ability3H = poke.abilities[2].isHidden;
+        break;
     }
+    setState(() {});
 
     return Scaffold(
       body: CustomScrollView(
@@ -60,7 +54,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               height: 10,
             ),
             _Abilities(
-              ability: poke.abilities[0].ability.name,
+              ability: ability,
               ability2: ability2,
               ability2H: ability2H,
               ability3: ability3,
@@ -76,7 +70,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
 class CustomAppBar extends StatelessWidget {
   final poket.Pokemon poke;
-  CustomAppBar({super.key, required this.poke});
+  const CustomAppBar({super.key, required this.poke});
   void paintType() {
     switch (poke.types[0].type.name) {
       case "normal":
@@ -172,8 +166,7 @@ class _SpriteDescription extends StatelessWidget {
   final String description;
 
   const _SpriteDescription(
-      {super.key,
-      required this.sprite,
+      {required this.sprite,
       required this.firstType,
       required this.genus,
       required this.description});
@@ -239,8 +232,7 @@ class _Abilities extends StatelessWidget {
   final bool? ability3H;
 
   const _Abilities(
-      {super.key,
-      required this.ability,
+      {required this.ability,
       this.ability2,
       this.ability3,
       this.ability2H,
@@ -266,17 +258,30 @@ class _Abilities extends StatelessWidget {
           if (ability2 != null)
             Row(
               children: [
-                if (ability2 != null) Text(ability2!, style: AppTheme.title), const Text(
-              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability."),
-          const SizedBox(height: 10),
-                if (ability2H == true) Icon(Icons.lock)
+                if (ability2 != null)
+                  Text("${ability2![0].toUpperCase()}${ability2!.substring(1)}",
+                      style: AppTheme.title),
+                if (ability2H == true)
+                  TextButton(
+                    child: const Icon(Icons.lock),
+                    onPressed: () {
+                      const AlertDialog(
+                        title: Text("Hidden Ability"),
+                        
+                        );
+                    },
+                  ),
               ],
             ),
+          const SizedBox(height: 10),
+          const Text(
+              "Does not affect non-damaging electric moves, i.e. thunder wave.  Increases the frequency of Match Call calls on the overworld if any party Pokémon has this ability."),
+          const SizedBox(height: 10),
           if (ability3 != null)
             Row(
               children: [
                 if (ability2 != null) Text(ability3!, style: AppTheme.title),
-                if (ability3H == true) Icon(Icons.lock)
+                if (ability3H == true) const Icon(Icons.lock)
               ],
             )
         ],

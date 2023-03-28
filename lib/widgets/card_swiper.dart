@@ -1,43 +1,29 @@
 // ignore_for_file: avoid_print
 
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/models/models.dart';
 
-class CardSwiper extends StatefulWidget {
-  const CardSwiper({super.key, required this.pokemons});
+class CardScroll extends StatefulWidget {
+  const CardScroll({super.key, required this.pokemons, required this.onSwipe});
   final List<Pokemon> pokemons;
-
-  
-  
-  
+  final Function onSwipe;
 
   @override
-  State<CardSwiper> createState() => _CardSwiperState();
+  State<CardScroll> createState() => _CardScrollState();
 }
 
-class _CardSwiperState extends State<CardSwiper> {
-  final SwiperController swipeController = SwiperController();
+class _CardScrollState extends State<CardScroll> {
+  final ScrollController scrollController = ScrollController();
 
-void detectSwipe() {
-    GestureDetector(onVerticalDragUpdate: (details) {
-      int sensitivity = 8;
-      if (details.delta.dy > sensitivity) {
-        print("abajo");
-      } else if (details.delta.dy < -sensitivity) {
-        print("arriba");
+  void detectSwipe() {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        widget.onSwipe();
       }
-    });}
-
-
-  @override
-  void initState() {
-    super.initState();
-    
-    swipeController.addListener(() {
-      detectSwipe();
     });
   }
+
 
   @override
   void dispose() {
@@ -52,13 +38,10 @@ void detectSwipe() {
     return SizedBox(
       width: double.infinity,
       height: size.height * 0.5,
-      child: Swiper(
-        controller: swipeController,
+      child: ListView.builder(
+        controller: scrollController,
         scrollDirection: Axis.vertical,
         itemCount: widget.pokemons.length,
-        layout: SwiperLayout.STACK,
-        itemWidth: size.width * 0.6,
-        itemHeight: size.height * 0.3,
         itemBuilder: (_, int index) {
           final pokemon = widget.pokemons[index];
           return GestureDetector(

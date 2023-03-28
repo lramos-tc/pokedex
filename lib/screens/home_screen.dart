@@ -7,8 +7,15 @@ import 'package:provider/provider.dart';
 import '../themes/themes.dart';
 import 'package:pokedex/router/app_routes.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int count = 11;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +24,6 @@ class HomeScreen extends StatelessWidget {
     final pokemonTypeProvider = Provider.of<PokemonTypeProvider>(context);
     final pokemonColorProvider = Provider.of<PokemonColorProvider>(context);
 
-    
     return Scaffold(
       drawer: Drawer(
         backgroundColor: AppTheme.deep,
@@ -41,10 +47,15 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-
         child: Column(children: [
-          CardSwiper(
-              pokemons: pokemonProvider.onDisplayPokemon,
+          CardScroll(
+            pokemons: pokemonProvider.onDisplayPokemon,
+            onSwipe: () => {
+              setState(() {
+                pokemonProvider.getOnDisplayPokemon(count);
+                count += 10;
+              }),
+            },
           ),
           FilterSlider(
             title: "Pokemon Type",
